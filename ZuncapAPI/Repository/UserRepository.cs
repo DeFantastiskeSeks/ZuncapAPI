@@ -12,9 +12,14 @@ namespace ZuncapAPI.Repository
             context = _dbContext;
         }
 
+        public List<User> GetAll()
+        {
+            return _dbContext.Set<User>().ToList();
+        }
+
         public User Create (User createUser)
         {
-            if (createUser.TelefonNummer > 8)
+            if (createUser.TelefonNummer > 9)
             {
                 throw new ArgumentOutOfRangeException("Telefon nummeret er over 8 tal");
             }

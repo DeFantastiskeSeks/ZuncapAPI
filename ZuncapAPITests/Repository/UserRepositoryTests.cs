@@ -5,16 +5,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZuncapAPI.Models;
+using Microsoft.EntityFrameworkCore;
+using ZuncapAPI.Context;
 
 namespace ZuncapAPI.Repository.Tests
 {
     [TestClass()]
     public class UserRepositoryTests
     {
+
+        //public static DbContext? Context = new DbContext()
+        public UserRepository? testRepo; // = new UserRepository();
+
+        public User testUser = new User { Name= "TestNavn", TelefonNummer = 1234567, Hudtype = 3, Password = "ABC123" };
+
         [TestMethod()]
         public void CreateTest()
         {
-            Assert.Fail();
+            testRepo.Create(testUser);
+            Assert.AreEqual(testRepo.GetAll().Count(), 1);
         }
     }
 }
