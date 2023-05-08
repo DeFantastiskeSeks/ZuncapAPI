@@ -16,7 +16,7 @@ namespace ZuncapAPI.Controllers
         [HttpPost]
         [ProducesErrorResponseType(StatusCodes.Status201Created)]
         [ProducesErrorResponseType(StatusCodes.Status404NotFound)]
-        [ProducesErrorResponseType(StatusCodes.Status404NotFound)]
+        //[ProducesErrorResponseType(StatusCodes.Status404NotFound)]
 
 
     }
