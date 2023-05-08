@@ -16,7 +16,9 @@ namespace ZuncapAPI.Repository.Tests
     {
 
         //public static DbContext? Context = new DbContext()
-        public UserRepository? testRepo; // = new UserRepository();
+        //public UserRepository? testRepo; // = new UserRepository();
+
+        public UserListRepo testRepo = new UserListRepo();
 
         public User testUser = new User { Name= "TestNavn", TelefonNummer = 1234567, Hudtype = 3, Password = "ABC123" };
 
