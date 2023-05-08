@@ -14,7 +14,7 @@ namespace ZuncapAPI.Repository
 
         public List<User> GetAll()
         {
-            return _dbContext.Set<User>().ToList();
+            return _dbContext?.Set<User>().ToList();
         }
         
         public User Create (User createUser)
@@ -25,7 +25,7 @@ namespace ZuncapAPI.Repository
             //}
 
             _dbContext?.Set<User>().Add(createUser);
-
+            _dbContext?.SaveChanges();
             return createUser;
         }
         

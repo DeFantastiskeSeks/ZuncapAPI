@@ -16,7 +16,7 @@ namespace ZuncapAPI.Controllers
 
 
 
-        [HttpGet]
+        [HttpGet("getall")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<User> Get()
@@ -25,7 +25,8 @@ namespace ZuncapAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(_repo.GetAll());
+            var user = _repo.GetAll();
+            return Ok(user);
         }
 
         [HttpPost("add")]
