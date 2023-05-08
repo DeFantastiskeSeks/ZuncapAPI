@@ -16,7 +16,7 @@ namespace ZuncapAPI.Repository
         {
             return _dbContext.Set<User>().ToList();
         }
-
+        
         public User Create (User createUser)
         {
             //if (createUser.TelefonNummer > 8)
