@@ -1,6 +1,6 @@
 ﻿using System.Reflection.PortableExecutable;
 
-namespace ZuncapAPI
+namespace ZuncapAPI.Models
 {
     public class User
     {
