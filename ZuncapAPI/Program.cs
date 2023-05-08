@@ -14,13 +14,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+
 
 var optionsBuilder = new DbContextOptionsBuilder<UserDbContext>();
 optionsBuilder.UseSqlServer(Secrets.ConnectionString);
 UserDbContext userDbContext = new UserDbContext(optionsBuilder.Options);
 builder.Services.AddSingleton<UserRepository>(new UserRepository(userDbContext));
-
+var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.

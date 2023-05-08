@@ -14,6 +14,20 @@ namespace ZuncapAPI.Controllers
             _repo = repo;
         }
 
+
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<User> Get()
+        {
+                  if (_repo.GetAll() == null )
+            {
+                return NotFound();
+            }
+            return Ok(_repo.GetAll());
+        }
+
         [HttpPost("add")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
