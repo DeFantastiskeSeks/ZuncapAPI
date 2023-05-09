@@ -65,6 +65,18 @@ namespace ZuncapAPI.Controllers
           
         }
 
-
+        [HttpDelete("delete")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<User> Delete(int userId) 
+        { 
+      
+            User user = _repo.Delete(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
     }
 }

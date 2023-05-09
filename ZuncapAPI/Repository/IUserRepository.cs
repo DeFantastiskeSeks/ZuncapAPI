@@ -6,5 +6,9 @@ namespace ZuncapAPI.Repository
     {
         User Create(User createUser);
         List<User> GetAll();
+        User GetById(int userId);
+
+        User Delete(int userId);
+
     }
 }

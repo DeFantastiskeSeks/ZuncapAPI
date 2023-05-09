@@ -23,5 +23,10 @@ namespace ZuncapAPI.Repository
             return createUser;
         }
 
+        public User Delete(User deleteUser) 
+        {
+            Users.Remove(deleteUser);
+            return deleteUser;
+        }
     }
 }
