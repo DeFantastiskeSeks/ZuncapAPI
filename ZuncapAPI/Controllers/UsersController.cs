@@ -5,28 +5,29 @@ using ZuncapAPI.Repository;
 
 namespace ZuncapAPI.Controllers
 {
-    public class UsersController : Controller
+    public class UsersController : ControllerBase
     {
-        public UserRepository _repo { get; set; }
-        public UsersController(UserRepository repo)
+        public IUserRepository _repo;
+        public UsersController(IUserRepository repo)
 
         {
             _repo = repo;
         }
 
-
-
         [HttpGet("getall")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<User> Get()
+
         {
-                  if (_repo.GetAll() == null )
-            {
-                return NotFound();
-            }
-            var user = _repo.GetAll();
-            return Ok(user);
+            List<User> result = _repo.GetAll();
+
+            if (result.Count < 1 )
+                {
+                    return NoContent();
+                }
+
+            return Ok(result);
         }
 
         [HttpPost("add")]
@@ -36,7 +37,10 @@ namespace ZuncapAPI.Controllers
         {
 
             try {
-
+                if (User == null)
+                {
+                    throw new ArgumentNullException("Null fejl");
+                }
                 User NewUser = _repo.Create(User);
 
                 return Created($"api/User/add/{NewUser.UserId}", NewUser);

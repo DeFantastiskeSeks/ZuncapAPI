@@ -16,10 +16,14 @@ builder.Services.AddSwaggerGen();
 
 
 
-var optionsBuilder = new DbContextOptionsBuilder<UserDbContext>();
+var optionsBuilder = 
+    new DbContextOptionsBuilder<UserDbContext>();
 optionsBuilder.UseSqlServer(Secrets.ConnectionString);
-UserDbContext userDbContext = new UserDbContext(optionsBuilder.Options);
-builder.Services.AddSingleton<UserRepository>(new UserRepository(userDbContext));
+UserDbContext userDbContext = 
+    new UserDbContext(optionsBuilder.Options);
+builder.Services.AddSingleton<IUserRepository>(
+    new UserRepositoryDB(userDbContext));
+
 var app = builder.Build();
 
 
