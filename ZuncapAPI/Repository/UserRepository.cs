@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ZuncapAPI.Context;
 using ZuncapAPI.Models;
 
 namespace ZuncapAPI.Repository
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
-        private DbContext? _dbContext;
+        private UserDbContext? _dbContext;
 
-        public UserRepository(DbContext? context)
+        public UserRepository(UserDbContext? context)
         {
             context = _dbContext;
         }
@@ -16,8 +17,8 @@ namespace ZuncapAPI.Repository
         {
             return _dbContext?.Set<User>().ToList();
         }
-        
-        public User Create (User createUser)
+
+        public User Create(User createUser)
         {
             //if (createUser.TelefonNummer > 8)
             //{
@@ -28,7 +29,7 @@ namespace ZuncapAPI.Repository
             _dbContext?.SaveChanges();
             return createUser;
         }
-        
+
 
     }
 }
