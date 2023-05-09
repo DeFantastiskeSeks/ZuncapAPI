@@ -5,6 +5,10 @@ using ZuncapAPI.Repository;
 
 namespace ZuncapAPI.Controllers
 {
+    [Route("api/[controller]")]
+    //URI: api/pokemons
+    [ApiController]
+
     public class UsersController : ControllerBase
     {
         public IUserRepository _repo;
