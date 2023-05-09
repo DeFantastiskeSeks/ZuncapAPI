@@ -1,5 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using ZuncapAPI.Context;
 using ZuncapAPI.Models;
 using ZuncapAPI.Repository;
 
@@ -12,10 +18,14 @@ namespace ZuncapAPI.Controllers
     public class UsersController : ControllerBase
     {
         public IUserRepository _repo;
-        public UsersController(IUserRepository repo)
+        public UserDbContext _dbContext;
+        public IConfiguration _configuration;
+        public UsersController(IUserRepository repo, IConfiguration configuration)
 
         {
             _repo = repo;
+            _dbContext = new UserDbContext();
+            _configuration = configuration;
         }
 
         [HttpGet("getall")]
@@ -82,5 +92,69 @@ namespace ZuncapAPI.Controllers
             }
             return Ok(user);
         }
+
+        [HttpPost("register")]
+        public ActionResult<User> Register(User request)
+        {
+            var existingUser =  _dbContext.Users.FirstOrDefault(u => u.Name == request.Name);
+            if (existingUser != null)
+            {
+                return BadRequest("Username already exists");
+            }
+
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            var newUser = new User
+            {
+                Name = request.Name,
+                Password = passwordHash
+            };
+
+           _repo.Create(newUser);
+            return Ok(newUser);
+        }
+
+
+
+        [HttpPost("login")]
+        public ActionResult<User> login(User request)
+        {
+            var users = _dbContext.Users.FirstOrDefault(x => x.Name == request.Name);
+            
+               if(users == null)
+            {
+                return BadRequest("User Not Found");
+            }
+            
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, users.Password))
+            {
+                return BadRequest("wrong password");
+            }
+
+            string token = CreateToken(users);
+
+
+            return Ok(token);
+
+        }
+
+        private string CreateToken(User user)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Name)
+            };
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Token").Value));
+
+            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(3),
+                signingCredentials: cred
+                );
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
+        }
+
+
     }
 }
