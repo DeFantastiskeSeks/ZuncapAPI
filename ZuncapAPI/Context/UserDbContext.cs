@@ -9,7 +9,7 @@ namespace ZuncapAPI.Context
 
 
 
-        public UserDbContext() : base() { }
+       
 
 
             // How to initialise dboptions with connection string

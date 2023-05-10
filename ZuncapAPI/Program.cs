@@ -18,11 +18,11 @@ builder.Services.AddSwaggerGen();
 
 var optionsBuilder = 
     new DbContextOptionsBuilder<UserDbContext>();
-optionsBuilder.UseSqlServer(Secrets.ConnectionString);
+builder.Services.AddDbContext<UserDbContext>(options => options.UseSqlServer(Secrets.ConnectionString));
 UserDbContext userDbContext = 
     new UserDbContext(optionsBuilder.Options);
-builder.Services.AddSingleton<IUserRepository>(
-    new UserRepositoryDB(userDbContext));
+builder.Services.AddScoped<IUserRepository>(sp =>
+    new UserRepositoryDB(sp.GetService<UserDbContext>()));
 
 var app = builder.Build();
 

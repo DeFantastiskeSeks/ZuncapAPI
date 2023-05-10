@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -18,17 +20,17 @@ namespace ZuncapAPI.Controllers
     public class UsersController : ControllerBase
     {
         public IUserRepository _repo;
-        public UserDbContext _dbContext;
+        private readonly UserDbContext _dbContext;
         public IConfiguration _configuration;
-        public UsersController(IUserRepository repo, IConfiguration configuration)
+        public UsersController(IUserRepository repo, IConfiguration configuration, UserDbContext dbContext)
 
         {
             _repo = repo;
-            _dbContext = new UserDbContext();
+            _dbContext = dbContext;
             _configuration = configuration;
         }
 
-        [HttpGet("getall")]
+        [HttpGet("home")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<User> Get()
@@ -36,10 +38,10 @@ namespace ZuncapAPI.Controllers
         {
             List<User> result = _repo.GetAll();
 
-            if (result.Count < 1 )
-                {
-                    return NoContent();
-                }
+            if (result.Count < 1)
+            {
+                return NoContent();
+            }
 
             return Ok(result);
         }
@@ -61,28 +63,28 @@ namespace ZuncapAPI.Controllers
 
 
 
-            } catch(ArgumentNullException ex)
+            } catch (ArgumentNullException ex)
             {
                 return BadRequest(ex.Message);
-                
 
-            } catch(ArgumentOutOfRangeException ex)
+
+            } catch (ArgumentOutOfRangeException ex)
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
 
                 return BadRequest(ex.Message);
             }
-            
-          
+
+
         }
 
         [HttpDelete("delete")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<User> Delete(int userId) 
+        public ActionResult<User> Delete([FromBody] int userId) 
         { 
       
             User user = _repo.Delete(userId);
@@ -136,13 +138,23 @@ namespace ZuncapAPI.Controllers
             return Ok(token);
 
         }
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+           
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("home");
+
+        }
 
         private string CreateToken(User user)
         {
+          
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Name)
             };
+        
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Token").Value));
 
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

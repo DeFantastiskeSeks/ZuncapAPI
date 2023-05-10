@@ -6,7 +6,7 @@ namespace ZuncapAPI.Repository
 {
     public class UserRepositoryDB : IUserRepository
     {
-        private UserDbContext _dbContext;
+        private readonly UserDbContext _dbContext;
 
         public UserRepositoryDB(UserDbContext context)
         {
