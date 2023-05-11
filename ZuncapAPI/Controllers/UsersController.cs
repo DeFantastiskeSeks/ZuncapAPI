@@ -84,9 +84,9 @@ namespace ZuncapAPI.Controllers
         [HttpDelete("delete")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<User> Delete([FromBody] int userId) 
-        { 
-      
+        public ActionResult<User> Delete([FromBody] int userId)
+        {
+
             User user = _repo.Delete(userId);
             if (user == null)
             {
@@ -96,9 +96,9 @@ namespace ZuncapAPI.Controllers
         }
 
         [HttpPost("register")]
-        public ActionResult<User> Register(User request)
+        public ActionResult<User> Register([FromBody] User request)
         {
-            var existingUser =  _dbContext.Users.FirstOrDefault(u => u.Name == request.Name);
+            var existingUser = _dbContext.Users.FirstOrDefault(u => u.Name == request.Name);
             if (existingUser != null)
             {
                 return BadRequest("Username already exists");
@@ -111,14 +111,14 @@ namespace ZuncapAPI.Controllers
                 Password = passwordHash
             };
 
-           _repo.Create(newUser);
+            _repo.Create(newUser);
             return Ok(newUser);
         }
 
 
 
         [HttpPost("login")]
-        public ActionResult<User> login(User request)
+        public ActionResult<User> login([FromBody] User request)
         {
             var users = _dbContext.Users.FirstOrDefault(x => x.Name == request.Name);
             
