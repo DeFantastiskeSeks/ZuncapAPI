@@ -138,12 +138,24 @@ namespace ZuncapAPI.Controllers
             return Ok(token);
 
         }
+        [ProducesResponseType(StatusCodes.Status308PermanentRedirect)]
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-           
-            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("home");
+            try
+            {
+                HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return Redirect("home");
+                //return Ok();
+
+                
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+
+         
 
         }
 

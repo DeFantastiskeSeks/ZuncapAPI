@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ZuncapAPI.Context;
@@ -14,6 +15,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+.AddCookie(opt =>
+
+{
+
+    opt.Cookie.Name = "zuncookies";
+    opt.LoginPath = "/api/Users/login";
+    opt.LogoutPath = "/api/Users/home";
+
+
+});
 
 
 var optionsBuilder = 
