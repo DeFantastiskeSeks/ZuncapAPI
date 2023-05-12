@@ -23,7 +23,6 @@ namespace ZuncapAPI.Controllers
         private readonly UserDbContext _dbContext;
         public IConfiguration _configuration;
         public UsersController(IUserRepository repo, IConfiguration configuration, UserDbContext dbContext)
-
         {
             _repo = repo;
             _dbContext = dbContext;
@@ -45,12 +44,32 @@ namespace ZuncapAPI.Controllers
             return Ok(result);
         }
 
+        [HttpPost("getuser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<User> GetUser([FromBody] User user)
+        {
+            try
+            {
+                User exsistingUser = _repo.GetByName(user.Name!);
+
+                return Ok(exsistingUser);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("add")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<User> POST([FromBody] User User)
         {
-
             try 
             {
                 if (User == null)
@@ -61,20 +80,10 @@ namespace ZuncapAPI.Controllers
 
                 return Created($"api/User/add/{NewUser.UserId}", NewUser);
             } 
-            catch (ArgumentNullException ex)
+            catch (ArgumentException)
             {
-                return BadRequest(ex.Message);
+                return BadRequest();
             } 
-            catch (ArgumentOutOfRangeException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-
         }
 
         [HttpPost("exposure")]
