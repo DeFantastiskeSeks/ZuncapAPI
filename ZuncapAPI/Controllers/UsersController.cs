@@ -80,7 +80,7 @@ namespace ZuncapAPI.Controllers
         [HttpPost("exposure")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<User> POSTExpo(int uv, [FromBody] User user)
+        public ActionResult<User> POSTExpo(float uv, [FromBody] User user)
         {
             try
             {
