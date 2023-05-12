@@ -40,7 +40,17 @@ namespace ZuncapAPI.Repository
             User? user = _dbContext.Users.Find(id);
             if (user == null)
             {
-                return null;
+                throw new NullReferenceException();
+            }
+            return user;
+        }
+
+        public User GetByName(string name) 
+        { 
+            User user = _dbContext.Users.First(u => u.Name == name);
+            if (user == null)
+            {
+                throw new NullReferenceException();
             }
             return user;
         }

@@ -34,7 +34,6 @@ namespace ZuncapAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult<User> Get()
-
         {
             List<User> result = _repo.GetAll();
 
@@ -52,7 +51,8 @@ namespace ZuncapAPI.Controllers
         public ActionResult<User> POST([FromBody] User User)
         {
 
-            try {
+            try 
+            {
                 if (User == null)
                 {
                     throw new ArgumentNullException("Null fejl");
@@ -60,25 +60,39 @@ namespace ZuncapAPI.Controllers
                 User NewUser = _repo.Create(User);
 
                 return Created($"api/User/add/{NewUser.UserId}", NewUser);
-
-
-
-            } catch (ArgumentNullException ex)
+            } 
+            catch (ArgumentNullException ex)
             {
                 return BadRequest(ex.Message);
-
-
-            } catch (ArgumentOutOfRangeException ex)
+            } 
+            catch (ArgumentOutOfRangeException ex)
             {
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-
                 return BadRequest(ex.Message);
             }
 
 
+        }
+
+        [HttpPost("exposure")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<User> POSTExpo(int uv, [FromBody] User user)
+        {
+            try
+            {
+                User exsistingUser = _repo.GetByName(user.Name!);
+                exsistingUser.UVExpo = uv;
+                _dbContext.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("delete")]
@@ -146,17 +160,11 @@ namespace ZuncapAPI.Controllers
             {
                 HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 return Redirect("home");
-                //return Ok();
-
-                
             }
             catch (Exception ex)
             {
                 return Ok(ex.Message);
             }
-
-         
-
         }
 
         private string CreateToken(User user)
@@ -164,10 +172,10 @@ namespace ZuncapAPI.Controllers
           
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Name)
+                new Claim(ClaimTypes.Name, user.Name!)
             };
         
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Token").Value));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Token").Value!));
 
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(
