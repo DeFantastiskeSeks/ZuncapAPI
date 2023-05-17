@@ -31,7 +31,7 @@ namespace ZuncapAPI.Controllers
         [HttpGet("home")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult<List<User>> Get()
+        public ActionResult<User> Get()
         {
             List<User> result = _repo.GetAll();
 
@@ -42,59 +42,41 @@ namespace ZuncapAPI.Controllers
 
             return Ok(result);
         }
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost("exposure")]
-        public ActionResult  PostExpo(int uv, [FromBody] User user) 
+
+        [HttpPost("add")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<User> POST([FromBody] User User)
         {
-            try
+
+            try {
+                if (User == null)
+                {
+                    throw new ArgumentNullException("Null fejl");
+                }
+                User NewUser = _repo.Create(User);
+
+                return Created($"api/User/add/{NewUser.UserId}", NewUser);
+
+
+
+            } catch (ArgumentNullException ex)
             {
-                var User = _repo.GetByUser(user.Name);
-                user.UvExpo = uv;
-                return Ok();
-            } 
-            catch (ArgumentException ex)
+                return BadRequest(ex.Message);
+
+
+            } catch (ArgumentOutOfRangeException ex)
             {
                 return BadRequest(ex.Message);
             }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+
 
         }
-
-
-        //[HttpPost("add")]
-        //[ProducesResponseType(StatusCodes.Status201Created)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //public ActionResult<User> POST([FromBody] User User)
-        //{
-
-        //    try {
-        //        if (User == null)
-        //        {
-        //            throw new ArgumentNullException("Null fejl");
-        //        }
-        //        User NewUser = _repo.Create(User);
-
-        //        return Created($"api/User/add/{NewUser.UserId}", NewUser);
-
-
-
-        //    } catch (ArgumentNullException ex)
-        //    {
-        //        return BadRequest(ex.Message);
-
-
-        //    } catch (ArgumentOutOfRangeException ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        return BadRequest(ex.Message);
-        //    }
-
-
-        //}
 
         [HttpDelete("delete")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -173,10 +155,10 @@ namespace ZuncapAPI.Controllers
           
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Name)
+                new Claim(ClaimTypes.Name, user.Name!)
             };
         
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Token").Value));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Token").Value!));
 
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(
