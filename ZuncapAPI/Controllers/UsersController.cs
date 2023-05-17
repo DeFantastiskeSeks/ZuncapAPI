@@ -16,14 +16,12 @@ namespace ZuncapAPI.Controllers
     [Route("api/[controller]")]
     //URI: api/pokemons
     [ApiController]
-
     public class UsersController : ControllerBase
     {
         public IUserRepository _repo;
         private readonly UserDbContext _dbContext;
         public IConfiguration _configuration;
         public UsersController(IUserRepository repo, IConfiguration configuration, UserDbContext dbContext)
-
         {
             _repo = repo;
             _dbContext = dbContext;
@@ -33,8 +31,7 @@ namespace ZuncapAPI.Controllers
         [HttpGet("home")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult<User> Get()
-
+        public ActionResult<List<User>> Get()
         {
             List<User> result = _repo.GetAll();
 
@@ -45,6 +42,24 @@ namespace ZuncapAPI.Controllers
 
             return Ok(result);
         }
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("exposure")]
+        public ActionResult  PostExpo(int uv, [FromBody] User user) 
+        {
+            try
+            {
+                var User = _repo.GetByUser(user.Name);
+                user.UvExpo = uv;
+                return Ok();
+            } 
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
 
         [HttpPost("add")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -146,17 +161,11 @@ namespace ZuncapAPI.Controllers
             {
                 HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 return Redirect("home");
-                //return Ok();
-
-                
             }
             catch (Exception ex)
             {
                 return Ok(ex.Message);
             }
-
-         
-
         }
 
         private string CreateToken(User user)

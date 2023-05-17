@@ -45,6 +45,17 @@ namespace ZuncapAPI.Repository
             return user;
         }
 
+        public User GetByUser(string username)
+        { 
+            User user = _dbContext.Users.First(x => x.Name == username);
+            if (user == null) 
+            {
+                return null;
+            
+            }
+            return user;
+        }
+
         public User Delete(int UserId)
         {
             var user = GetById(UserId);

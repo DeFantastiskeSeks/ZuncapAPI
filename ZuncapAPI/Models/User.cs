@@ -13,5 +13,6 @@ namespace ZuncapAPI.Models
         public int TelefonNummer { get; set; }
         public string? Password { get; set; }
         public int Hudtype { get; set; }
+        public int UvExpo { get; set; }
     }
 }
