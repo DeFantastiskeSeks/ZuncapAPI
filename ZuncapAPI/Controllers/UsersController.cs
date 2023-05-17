@@ -61,40 +61,40 @@ namespace ZuncapAPI.Controllers
         }
 
 
-        [HttpPost("add")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<User> POST([FromBody] User User)
-        {
+        //[HttpPost("add")]
+        //[ProducesResponseType(StatusCodes.Status201Created)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //public ActionResult<User> POST([FromBody] User User)
+        //{
 
-            try {
-                if (User == null)
-                {
-                    throw new ArgumentNullException("Null fejl");
-                }
-                User NewUser = _repo.Create(User);
+        //    try {
+        //        if (User == null)
+        //        {
+        //            throw new ArgumentNullException("Null fejl");
+        //        }
+        //        User NewUser = _repo.Create(User);
 
-                return Created($"api/User/add/{NewUser.UserId}", NewUser);
-
-
-
-            } catch (ArgumentNullException ex)
-            {
-                return BadRequest(ex.Message);
+        //        return Created($"api/User/add/{NewUser.UserId}", NewUser);
 
 
-            } catch (ArgumentOutOfRangeException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
 
-                return BadRequest(ex.Message);
-            }
+        //    } catch (ArgumentNullException ex)
+        //    {
+        //        return BadRequest(ex.Message);
 
 
-        }
+        //    } catch (ArgumentOutOfRangeException ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        return BadRequest(ex.Message);
+        //    }
+
+
+        //}
 
         [HttpDelete("delete")]
         [ProducesResponseType(StatusCodes.Status200OK)]
